@@ -7,32 +7,6 @@ speed, distance, ETA, route progress and a live event feed.
 
 ![ridefollow following a live ride in the terminal](cli.png)
 
-```
-  RIDEFOLLOW // TERMINAL                                          ● LIVE FEED
-  TRACKING: CHARLOTTE M. · SESSION #0417 · ROUTE: 42 KM              12:03:15
-  ────────────────────────────────────────────────────────────────────────────
-
-  ╭──────────────────────────────────────────────────────────────────────────╮
-  │  SPEED KM/H   │ DISTANCE KM  │ ELAPSED      │ ETA          │ TOP KM/H      │
-  │   ┓┓ ┏┓       │  ┓┏  ┃┃      │  ┓┏ ┓┏ ┓ ┓   │  ┓┓ ┓ ┏      │  ┏┓ ┓ ┏┓      │
-  │   ┗┓ ┗━       │  ┃┗  ╹╹      │  ┗┓ ┃┃ ┗━┛   │  ┗┛ ╹ ┗━     │  ┗┓ ╹ ┗┓      │
-  ╰──────────────────────────────────────────────────────────────────────────╯
-
-  ╭──────────────────────╮  ╭────────────────────────────────────────────────╮
-  │ STATUS               │  │ ROUTE PROGRESS · 37%                           │
-  │ DESCENDING           │  │                                                │
-  │                      │  │ [================>---------------------------]  │
-  │ HEADING              │  │                                                │
-  │ NORTH-EAST           │  │ KM 0 · START                    KM 42 · FINISH │
-  ╰──────────────────────╯  ╰────────────────────────────────────────────────╯
-
-  ╭──────────────────────────────────────────────────────────────────────────╮
-  │ EVENT LOG                                                                │
-  │ [33:36] CHECKPOINT · 15.0 KM                                             │
-  │ [34:24] CHEER SENT → CHARLOTTE                                           │
-  ╰──────────────────────────────────────────────────────────────────────────╯
-```
-
 (The headline metrics render as glowing seven-segment "LCD" digits; the wordmark's
 `//` and the progress arrow carry the RideFollow flame accent.)
 
@@ -119,3 +93,7 @@ dependency-light package (only `mqtt`).
 ## License
 
 MIT
+
+This license applies only to the contents of this `ridefollow-cli` repository.
+The RideFollow mobile app, backend, cloud infrastructure, and the main private
+RideFollow repository are not included here and remain proprietary.

@@ -2,3 +2,10 @@ node_modules/
 *.tgz
 *.log
 .DS_Store
+.env
+.env.*
+!.env.example
+.npmrc
+tokens.txt
+secrets.txt
+*.tokens
