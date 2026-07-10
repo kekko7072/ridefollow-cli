@@ -38,7 +38,8 @@
   },
   "scripts": {
     "start": "node bin/ridefollow-cli.js",
-    "test": "node test/units.mjs"
+    "test": "node test/units.mjs",
+    "release": "bash scripts/release.sh"
   },
   "dependencies": {
     "mqtt": "^5.3.0"
