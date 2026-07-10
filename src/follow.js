@@ -232,26 +232,16 @@ export async function follow({ token, apiBase, shareHost }, options = {}) {
     resolveDone();
   };
 
-  ui.start();
-  ui.onKey((action) => {
-    if (action === 'quit') {
-      cleanup();
-    } else if (action === 'cheer') {
-      if (state.canCheer && client && client.connected) {
-        client.publish(share.cheersTopic, JSON.stringify({ from: name, emoji: cheerEmoji }), { qos: 0, retain: false });
-        pushEvent(`CHEER SENT → ${(state.riderName || 'RIDER').toUpperCase()}`, 'hi');
-      } else {
-        pushEvent('CANNOT CHEER — NOT CONNECTED', 'warn');
-      }
-      render();
-    }
-  });
+  // Quit handlers first, so Ctrl-C exits cleanly even while we're still
+  // resolving the token — before the dashboard (and its key handler) exist.
   const onSignal = () => cleanup();
   process.on('SIGINT', onSignal);
   process.on('SIGTERM', onSignal);
-  render();
 
   // 1) Resolve the token → rider + read-only broker creds scoped to this ride.
+  // Do this BEFORE opening the full-screen UI: an expired or invalid link then
+  // fails with a plain one-line message, instead of flashing the dashboard open
+  // and tearing it straight back down — which reads like a crash.
   let share;
   try {
     share = await resolveRide(apiBase, token);
@@ -268,6 +258,22 @@ export async function follow({ token, apiBase, shareHost }, options = {}) {
     cleanup();
     throw new Error('this ride link has expired or is invalid — ask for a fresh one');
   }
+
+  // Valid ride — bring up the dashboard now.
+  ui.start();
+  ui.onKey((action) => {
+    if (action === 'quit') {
+      cleanup();
+    } else if (action === 'cheer') {
+      if (state.canCheer && client && client.connected) {
+        client.publish(share.cheersTopic, JSON.stringify({ from: name, emoji: cheerEmoji }), { qos: 0, retain: false });
+        pushEvent(`CHEER SENT → ${(state.riderName || 'RIDER').toUpperCase()}`, 'hi');
+      } else {
+        pushEvent('CANNOT CHEER — NOT CONNECTED', 'warn');
+      }
+      render();
+    }
+  });
   state.rider = share.rider;
   state.riderName = share.rider;
   state.canCheer = Boolean(share.cheersTopic);

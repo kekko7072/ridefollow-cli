@@ -43,6 +43,16 @@ ridefollow-cli <share-link | token>
 You can paste the whole share link, just the `host/?ride=…` part, or the bare
 token — they all work.
 
+> **Zsh tip — unquoted links.** A bare share URL trips your shell's globbing on
+> the `?` (`zsh: no matches found`) *before* the CLI ever runs, so quoting is up
+> to the shell, not the tool. Either quote the link, or pass just the token
+> (no `?`, so no quotes needed). To always allow unquoted links, alias the
+> command through `noglob` in your `~/.zshrc`:
+>
+> ```sh
+> alias ridefollow-cli='noglob ridefollow-cli'
+> ```
+
 | Option | | Description |
 | --- | --- | --- |
 | `-n, --name <name>` | | Name shown on a cheer you send (env `RIDEFOLLOW_NAME`) |

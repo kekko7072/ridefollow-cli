@@ -1,6 +1,6 @@
 {
   "name": "ridefollow-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Follow a live RideFollow bike ride from your terminal — paste a share link, watch it like a race.",
   "type": "module",
   "license": "MIT",
