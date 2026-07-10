@@ -42,7 +42,11 @@ jobs:
 
       - name: Upgrade npm
         # Trusted Publishing needs npm >= 11.5.1; Node 22 still ships npm 10.x.
-        run: npm install -g npm@latest
+        # Pinned to 11.x on purpose: npm 12.0.0 ships a broken bundle (the
+        # `sigstore` package is missing from libnpmpublish's reachable
+        # node_modules), so `npm publish` fails with MODULE_NOT_FOUND — even
+        # more so with --provenance. Drop the pin once a fixed 12.0.x is out.
+        run: npm install -g npm@11
 
       - name: Resolve version
         id: ver
