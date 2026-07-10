@@ -1,0 +1,126 @@
+name: publish-cli
+
+# Publishes the terminal client (cli/) to npm — and, if a Homebrew tap is
+# configured, bumps its formula — whenever a `cli-v*` tag is pushed.
+#
+#   git tag cli-v1.0.0 && git push origin cli-v1.0.0
+#
+# Required repository secret:
+#   NPM_TOKEN            npm automation token with publish rights to `ridefollow`
+# Optional (enables the Homebrew tap bump):
+#   HOMEBREW_TAP_TOKEN   PAT with write access to the tap repo
+#   HOMEBREW_TAP_REPO    repo variable, default ridefollow/homebrew-tap
+
+on:
+  push:
+    tags:
+      - "cli-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 1.0.0)"
+        required: true
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VER="${{ github.event.inputs.version }}"
+          else
+            VER="${GITHUB_REF_NAME#cli-v}"
+          fi
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          echo "Publishing ridefollow@$VER"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Set package version
+        run: npm version "${{ steps.ver.outputs.version }}" --no-git-tag-version --allow-same-version
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  update-homebrew:
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    env:
+      TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      TAP_REPO: ${{ vars.HOMEBREW_TAP_REPO || 'ridefollow/homebrew-tap' }}
+    steps:
+      - name: Should we bump the tap?
+        id: guard
+        run: |
+          if [ -n "$TAP_TOKEN" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::HOMEBREW_TAP_TOKEN not set — skipping Homebrew tap bump (npm publish still ran)."
+          fi
+
+      - name: Checkout source (for the seed formula)
+        if: steps.guard.outputs.go == 'true'
+        uses: actions/checkout@v4
+
+      - name: Checkout tap
+        if: steps.guard.outputs.go == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TAP_REPO }}
+          token: ${{ env.TAP_TOKEN }}
+          path: tap
+
+      - name: Update formula
+        if: steps.guard.outputs.go == 'true'
+        run: |
+          set -euo pipefail
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VER="${{ github.event.inputs.version }}"
+          else
+            VER="${GITHUB_REF_NAME#cli-v}"
+          fi
+          URL="https://registry.npmjs.org/ridefollow/-/ridefollow-${VER}.tgz"
+          # npm can lag a few seconds behind publish — retry until the tarball is live.
+          for i in $(seq 1 30); do
+            if curl -fsL "$URL" -o pkg.tgz; then break; fi
+            echo "waiting for $URL ($i)…"; sleep 5
+          done
+          SHA=$(sha256sum pkg.tgz | awk '{print $1}')
+          echo "version=$VER sha256=$SHA"
+          mkdir -p tap/Formula
+          # Rewrite url/sha256 in the seed formula and drop it into the tap.
+          sed -E \
+            -e "s#^  url \".*\"#  url \"${URL}\"#" \
+            -e "s#^  sha256 \".*\"#  sha256 \"${SHA}\"#" \
+            cli/Formula/ridefollow.rb > tap/Formula/ridefollow.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "Formula already up to date."
+          else
+            git add Formula/ridefollow.rb
+            git commit -m "ridefollow ${VER}"
+            git push
+          fi

@@ -1,0 +1,46 @@
+{
+  "name": "ridefollow",
+  "version": "1.0.0",
+  "description": "Follow a live RideFollow bike ride from your terminal — paste a share link, watch it like a race.",
+  "type": "module",
+  "license": "MIT",
+  "author": "RideFollow",
+  "homepage": "https://ridefollow.live",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kekko7072/ridefollow-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kekko7072/ridefollow-cli/issues"
+  },
+  "keywords": [
+    "ridefollow",
+    "cycling",
+    "cli",
+    "tui",
+    "terminal",
+    "gps",
+    "live",
+    "tracking",
+    "mqtt"
+  ],
+  "bin": {
+    "ridefollow": "bin/ridefollow.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/ridefollow.js",
+    "test": "node test/units.mjs"
+  },
+  "dependencies": {
+    "mqtt": "^5.3.0"
+  }
+}
