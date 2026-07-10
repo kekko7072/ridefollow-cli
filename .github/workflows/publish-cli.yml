@@ -1,6 +1,6 @@
 name: publish-cli
 
-# Publishes the terminal client (cli/) to npm — and, if a Homebrew tap is
+# Publishes the terminal client to npm — and, if a Homebrew tap is
 # configured, bumps its formula — whenever a `cli-v*` tag is pushed.
 #
 #   git tag cli-v1.0.0 && git push origin cli-v1.0.0
@@ -26,9 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    defaults:
-      run:
-        working-directory: cli
     steps:
       - uses: actions/checkout@v4
 
@@ -113,7 +110,7 @@ jobs:
           sed -E \
             -e "s#^  url \".*\"#  url \"${URL}\"#" \
             -e "s#^  sha256 \".*\"#  sha256 \"${SHA}\"#" \
-            cli/Formula/ridefollow-cli.rb > tap/Formula/ridefollow-cli.rb
+            Formula/ridefollow-cli.rb > tap/Formula/ridefollow-cli.rb
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
