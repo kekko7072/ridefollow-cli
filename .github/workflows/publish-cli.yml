@@ -6,7 +6,7 @@ name: publish-cli
 #   git tag cli-v1.0.0 && git push origin cli-v1.0.0
 #
 # Required repository secret:
-#   NPM_TOKEN            npm automation token with publish rights to `ridefollow`
+#   NPM_TOKEN            npm automation token with publish rights to `ridefollow-cli`
 # Optional (enables the Homebrew tap bump):
 #   HOMEBREW_TAP_TOKEN   PAT with write access to the tap repo
 #   HOMEBREW_TAP_REPO    repo variable, default ridefollow/homebrew-tap
@@ -46,7 +46,7 @@ jobs:
             VER="${GITHUB_REF_NAME#cli-v}"
           fi
           echo "version=$VER" >> "$GITHUB_OUTPUT"
-          echo "Publishing ridefollow@$VER"
+          echo "Publishing ridefollow-cli@$VER"
 
       - name: Install dependencies
         run: npm ci
@@ -100,7 +100,7 @@ jobs:
           else
             VER="${GITHUB_REF_NAME#cli-v}"
           fi
-          URL="https://registry.npmjs.org/ridefollow/-/ridefollow-${VER}.tgz"
+          URL="https://registry.npmjs.org/ridefollow-cli/-/ridefollow-cli-${VER}.tgz"
           # npm can lag a few seconds behind publish — retry until the tarball is live.
           for i in $(seq 1 30); do
             if curl -fsL "$URL" -o pkg.tgz; then break; fi
@@ -113,14 +113,14 @@ jobs:
           sed -E \
             -e "s#^  url \".*\"#  url \"${URL}\"#" \
             -e "s#^  sha256 \".*\"#  sha256 \"${SHA}\"#" \
-            cli/Formula/ridefollow.rb > tap/Formula/ridefollow.rb
+            cli/Formula/ridefollow-cli.rb > tap/Formula/ridefollow-cli.rb
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if git diff --quiet; then
             echo "Formula already up to date."
           else
-            git add Formula/ridefollow.rb
-            git commit -m "ridefollow ${VER}"
+            git add Formula/ridefollow-cli.rb
+            git commit -m "ridefollow-cli ${VER}"
             git push
           fi

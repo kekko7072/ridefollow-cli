@@ -1,5 +1,5 @@
 {
-  "name": "ridefollow",
+  "name": "ridefollow-cli",
   "version": "1.0.0",
   "description": "Follow a live RideFollow bike ride from your terminal — paste a share link, watch it like a race.",
   "type": "module",
@@ -25,7 +25,7 @@
     "mqtt"
   ],
   "bin": {
-    "ridefollow": "bin/ridefollow.js"
+    "ridefollow-cli": "bin/ridefollow-cli.js"
   },
   "files": [
     "bin",
@@ -37,7 +37,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "start": "node bin/ridefollow.js",
+    "start": "node bin/ridefollow-cli.js",
     "test": "node test/units.mjs"
   },
   "dependencies": {

@@ -29,7 +29,7 @@ export function deriveApiBase(host) {
  */
 export function parseTarget(input, opts = {}) {
   const raw = String(input || '').trim().replace(/^["']|["']$/g, '');
-  if (!raw) throw new Error('No ride link or token given. Try: ridefollow <share-link>');
+  if (!raw) throw new Error('No ride link or token given. Try: ridefollow-cli <share-link>');
 
   const apiOverride = normalizeApiOverride(opts.apiOverride);
 

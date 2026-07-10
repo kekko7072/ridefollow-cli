@@ -8,6 +8,6 @@ main(process.argv.slice(2)).catch((err) => {
   } catch {
     /* ignore */
   }
-  process.stderr.write(`\nridefollow: ${err && err.message ? err.message : err}\n`);
+  process.stderr.write(`\nridefollow-cli: ${err && err.message ? err.message : err}\n`);
   process.exit(1);
 });

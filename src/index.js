@@ -13,11 +13,11 @@ function version() {
   }
 }
 
-const HELP = `ridefollow — follow a live RideFollow bike ride from your terminal
+const HELP = `ridefollow-cli — follow a live RideFollow bike ride from your terminal
 
 USAGE
-  ridefollow <share-link | token>
-  npx ridefollow https://ridefollow.live/?ride=<token>
+  ridefollow-cli <share-link | token>
+  npx ridefollow-cli https://ridefollow.live/?ride=<token>
 
 OPTIONS
   -n, --name <name>   the name shown on a cheer you send      (env RIDEFOLLOW_NAME)
@@ -60,7 +60,7 @@ export async function main(argv) {
     } else if (a === '--insecure') {
       opts.insecure = true;
     } else if (a.startsWith('-')) {
-      throw new Error(`unknown option "${a}" — run \`ridefollow --help\``);
+      throw new Error(`unknown option "${a}" — run \`ridefollow-cli --help\``);
     } else {
       positional.push(a);
     }

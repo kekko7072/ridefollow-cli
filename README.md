@@ -1,4 +1,4 @@
-# ridefollow
+# ridefollow-cli
 
 Follow a live [RideFollow](https://ridefollow.live) bike ride from your terminal.
 Someone shares a private link from the RideFollow app — you paste it here and
@@ -15,21 +15,21 @@ speed, distance, ETA, route progress and a live event feed.
 **npm** (no install — just run it):
 
 ```sh
-npx ridefollow "https://ridefollow.live/?ride=<token>"
+npx ridefollow-cli "https://ridefollow.live/?ride=<token>"
 ```
 
 or install it globally:
 
 ```sh
-npm install -g ridefollow
-ridefollow "https://ridefollow.live/?ride=<token>"
+npm install -g ridefollow-cli
+ridefollow-cli "https://ridefollow.live/?ride=<token>"
 ```
 
 **Homebrew**:
 
 ```sh
-brew install ridefollow/tap/ridefollow
-ridefollow "https://ridefollow.live/?ride=<token>"
+brew install ridefollow/tap/ridefollow-cli
+ridefollow-cli "https://ridefollow.live/?ride=<token>"
 ```
 
 Requires Node.js 18+ (Homebrew pulls it in automatically).
@@ -37,7 +37,7 @@ Requires Node.js 18+ (Homebrew pulls it in automatically).
 ## Usage
 
 ```
-ridefollow <share-link | token>
+ridefollow-cli <share-link | token>
 ```
 
 You can paste the whole share link, just the `host/?ride=…` part, or the bare
@@ -64,7 +64,7 @@ to a plain one-line-per-update mode instead of the full-screen dashboard.
 ## How it works
 
 RideFollow share links are per-ride and self-expiring — the token *is* the
-capability. `ridefollow`:
+capability. `ridefollow-cli`:
 
 1. Resolves the token against the control-plane API (`GET /v1/ride/<token>`),
    which hands back the rider plus a **read-only broker account scoped to just
