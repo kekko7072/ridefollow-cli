@@ -16,8 +16,13 @@ function version() {
 const HELP = `ridefollow-cli — follow a live RideFollow bike ride from your terminal
 
 USAGE
-  ridefollow-cli <share-link | token>
-  npx ridefollow-cli https://ridefollow.live/?ride=<token>
+  ridefollow-cli <token>
+  ridefollow-cli "<share-link>"
+  npx ridefollow-cli "https://ridefollow.live/?ride=<token>"
+
+  Quote the share link — the "?" and "&" in a URL are special to your
+  shell (zsh otherwise prints "no matches found"). The bare token works
+  without quotes.
 
 OPTIONS
   -n, --name <name>   the name shown on a cheer you send      (env RIDEFOLLOW_NAME)
